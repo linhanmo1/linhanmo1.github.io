@@ -1,0 +1,82 @@
+---
+layout: post
+title: LG3805
+date: 2026-09-25
+math: true
+---
+
+<details>
+<summary>Link</summary>
+
+[题目](https://www.luogu.com.cn/problem/P3805#ide)
+
+[题解](https://www.luogu.com.cn/article/oqvd7cqt)
+
+</details>
+
+你说得对，但是 Hash 是 $O(|S|)$ 的。
+
+## 思路
+
+设 $f_i$ 表示以 $i$ 结尾的最长回文串的长度。
+
+易得 $f_i\le f_{i-1}+2$。（$2$ 表示从原有的左右扩展的）。
+
+可以想到 $f_i$ 就从 $f_{i-1}+2$ 暴力向后枚举，直到 $S_{[i-f_i+1,i]}$ 是回文串。
+
+那么答案就是 $\max\{f_i\}$。
+
+### 时间复杂度
+
+看上去该算法是 $O(n^2)$ 的。
+
+但是考虑将 $f_i$ 看作一个指针，则每一个 $i$ 该指针都会往后移 $2$ 格，所以向后枚举的长度之和也小于 $2n$。
+
+所以时间复杂度 $O(n)$。
+
+但是常数极大。
+
+## Code
+
+```cpp
+// linhanmo
+#include <bits/stdc++.h>
+using namespace std;
+
+constexpr int N = 11000010; int n; char s[N];
+
+
+// ----- Hash 判断区间是否回文 -----
+unsigned h1fr[N], h1bk[N], pw1[N]; unsigned long long h2fr[N], h2bk[N], pw2[N]; // 双哈希（自然溢出）
+
+inline void build() {
+    pw1[0] = pw2[0] = 1;
+    for (register int i = 1; i <= n; ++i)
+        pw1[i] = pw1[i - 1] * 131, h1fr[i] = h1fr[i - 1] * 131 + s[i], h1bk[i] = h1bk[i - 1] * 131 + s[n - i + 1],
+        pw2[i] = pw2[i - 1] * 13331, h2fr[i] = h2fr[i-1] * 13331 + s[i], h2bk[i] = h2bk[i - 1] * 13331 + s[n - i + 1];
+    // 预处理从前往后和从后往前 Hash 值
+}
+
+inline bool check(int l, int r) {
+    return h1fr[r] - h1fr[l - 1] * pw1[r - l + 1] == h1bk[n - l + 1] - h1bk[n - r] * pw1[r - l + 1]
+           && h2fr[r] - h2fr[l - 1] * pw2[r - l + 1] == h2bk[n - l + 1] - h2bk[n - r] * pw2[r - l + 1];
+    // 判断从前往后和从后往前 Hash 值是否相等
+}
+// ----------
+
+
+int main() {
+    ios::sync_with_stdio(false), cin.tie(nullptr);
+    cin >> s + 1, n = strlen(s + 1), build();
+
+    // ----- 主体部分 -----
+    int ans = 0, len[2] = {0, 0};
+    for (register int i = 1, now = 1; i <= n; ++i) {
+        for (len[now] = min(len[now ^ 1] + 2, i); len[now] > 0 && !check(i - len[now] + 1, i); --len[now]); //  向后枚举
+        ans = max(ans, len[now]), now ^= 1;
+    } cout << ans << '\n';
+    // ----------
+
+    return 0;
+}
+```
