@@ -8,4 +8,4 @@ signed main() {
 
 ***你好，世界***
 
-$$\text{Hello World}$$
+$\text{Hello World}$
