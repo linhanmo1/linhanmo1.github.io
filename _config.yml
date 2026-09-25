@@ -16,10 +16,9 @@ timezone:
 
 title: 'linhanmo 的博客' # the main title
 
-tagline: 'linhanmo''s blog' # it will display as the subtitle
+tagline: "linhanmo's blog" # it will display as the subtitle
 
-description: >- # used by seo meta and the atom feed
-  'Talk is cheap, show me the code. Think twice, code once.'
+description: "Talk is cheap, show me the code. Think twice, code once."
 
 # Fill in the protocol & hostname for your site.
 # E.g. 'https://username.github.io', note that it does not end with a '/'.
