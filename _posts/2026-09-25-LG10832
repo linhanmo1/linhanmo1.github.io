@@ -1,0 +1,99 @@
+---
+layout: post
+title: LG10832
+date: 2026-09-25
+math: true
+---
+
+# 题解：P10832 [COTS 2023] 传 Mapa
+
+<details>
+<summary>Link</summary>
+
+[Problem](https://www.luogu.com.cn/problem/P10832)
+[Solution](https://www.luogu.com.cn/article/zoev7po6)
+
+</details>
+
+## 前置知识
+
+[拉格朗日插值](https://www.luogu.com.cn/problem/P4781)
+
+## 正文
+
+看到查询时还会再给出 $x_i$ 一遍，考虑构造一个多项式 $f$ 使得 $f(x_i)=y_i$，这样就只需要存储 $n$ 个数了。
+
+具体来说，对于编码操作，我们用点值表示法来传输 $f$，即求出 $f(1)$ 到 $f(n)$ 的值，这一部分可以用拉格朗日插值法完成。
+
+对于解码操作，我们也用拉格朗日插值法来求出 $f(x_i)$ 即可。
+
+由于 $x_i,y_i\le 10^9$，模数取 $10^9+7$ 即可。
+
+<details>
+<summary> 代码</summary>
+
+编码操作时间复杂度 $O(n^2(n+\log P))$，解码操作时间复杂度 $O(nq(n+\log P))$（$P$ 为模数）。
+
+[AC link](https://www.luogu.com.cn/record/271719395)
+
+```cpp
+/****************************************
+ * Auther: linhanmo
+ * Problem: Luogu P10832
+ * Link: https://www.luogu.com.cn/problem/P10832
+ * clang-format on
+ * RP++
+ ****************************************/
+#include <bits/stdc++.h>
+using namespace std;
+using ll = long long;
+#define For(i, st, ed) for (register int i(st); i <= (ed); ++i)
+
+constexpr ll MOD = 1000000007, N = 110;
+inline ll inv(ll x) {  // 逆元
+	ll ans = 1, y = 1000000005;
+	for (; y; y >>= 1, x = x * x % MOD)
+		if (y & 1) ans = ans * x % MOD;
+	return ans;
+}
+int n, q, k;
+ll x[N], y[N], f[N];
+inline ll Lagrange(ll I) {	// 拉格朗日插值
+	ll ans = 0;
+	For(i, 1, n) {
+		ll a = y[i], b = 1;
+		For(j, 1, n) if (j != i) a = a * (I - x[j]) % MOD,
+								 b = b * (x[i] - x[j]) % MOD;
+		ans = (ans + a * inv(b)) % MOD;
+	}
+	return (ans + MOD) % MOD;
+}
+void Ana() {  // 编码操作
+	cin >> n;
+	For(i, 1, n) cin >> x[i] >> y[i];
+	cout << n * 30 << '\n';
+	For(i, 1, n) {
+		int str = Lagrange(i); /* 拉格朗日插值求 1 ~ n 的点值 */
+		for (register int j = 29; j >= 0; --j)
+			cout << (str >> j & 1); /* 压缩 */
+	}
+}
+void Borna() {	// 解码操作
+	cin >> n >> q >> k >> ws;
+	For(i, 1, n) {
+		x[i] = i, y[i] = 0;
+		For(j, 0, 29) y[i] = (y[i] << 1) + (cin.get() ^ 48);
+	}  // 解压
+	For(Q, 1, q) {
+		ll i;
+		cin >> i, cout << Lagrange(i) << '\n';
+	}  // 拉格朗日插值求 x 的点值
+}
+int main() {
+	ios::sync_with_stdio(false), cin.tie(nullptr);
+	int T;
+	cin >> T, T == 1 ? Ana() : Borna();
+}
+```
+
+</details>
