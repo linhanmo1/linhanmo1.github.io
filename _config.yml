@@ -2,7 +2,7 @@
 
 # Import the theme
 theme: jekyll-theme-chirpy
-
+# license
 math: true
 
 # The language of the webpage › http://www.lingoes.net/en/translator/langcode.htm
