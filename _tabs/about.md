@@ -6,4 +6,4 @@ order: 4
 
 linhanmo's blog
 
-![Visitors](https://api.visitorbadge.io/api/visitors?path=https%3A%2F%2Flinhanmo1.github.io&label=VISITORS&countColor=%23263759)
+[![Website visitor counter](https://toolspivot.com/website-hit-counter/c/&style=svg-green&show=p&num=6&uid=yVgv)](https://toolspivot.com/website-hit-counter)
