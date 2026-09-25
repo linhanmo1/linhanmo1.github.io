@@ -1,22 +1,20 @@
 // assets/js/custom-click-effect.js
 (function() {
-  // 配置参数
   const config = {
-    particleCount: 12,      // 每次点击产生的彩球数量
-    baseSize: 10,           // 彩球基础大小
-    speed: 8,               // 飞散初速度
-    fadeSpeed: 0.03,        // 消失速度（0-1，越大消失越快）
-    colors: ['#FF595E', '#FFCA3A', '#8AC926', '#1982C4', '#6A4C93'] // 调色板
+    particleCount: 12,
+    baseSize: 10,
+    speed: 8,
+    fadeSpeed: 0.03,
+    colors: ['#FF595E', '#FFCA3A', '#8AC926', '#1982C4', '#6A4C93']
   };
 
-  // 创建画布
   const canvas = document.createElement('canvas');
   canvas.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;';
   document.body.appendChild(canvas);
   const ctx = canvas.getContext('2d');
 
   let particles = [];
-  let animationId;
+  let animationId = null;
 
   function resizeCanvas() {
     canvas.width = window.innerWidth;
@@ -39,7 +37,6 @@
     }
 
     update() {
-      // 无重力，仅应用简单摩擦
       this.x += this.vx;
       this.y += this.vy;
       this.vx *= 0.98;
@@ -48,7 +45,8 @@
     }
 
     draw() {
-      ctx.globalAlpha = this.alpha;
+      // 关键修复：钳制 alpha 到 [0, 1]，避免负值导致浏览器保留旧值
+      ctx.globalAlpha = Math.max(0, Math.min(1, this.alpha));
       ctx.beginPath();
       ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
       ctx.fillStyle = this.color;
@@ -72,26 +70,30 @@
 
   function animate() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    
+
     for (let i = particles.length - 1; i >= 0; i--) {
       const p = particles[i];
       p.update();
-      p.draw();
+
+      // 关键修复：先判断死亡并移除，再决定是否绘制
       if (p.isDead()) {
         particles.splice(i, 1);
+        continue;
       }
+
+      p.draw();
     }
 
     if (particles.length > 0) {
       animationId = requestAnimationFrame(animate);
     } else {
+      // 关键修复：动画结束后再清一次画布，防止最后一帧残留
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
       animationId = null;
     }
   }
 
-  // 监听全局点击事件
   document.addEventListener('click', function(e) {
-    // 避免在输入框、按钮等交互元素上触发（可选）
     if (e.target.closest('input, textarea, button, a, select')) return;
     createParticles(e.clientX, e.clientY);
   });
