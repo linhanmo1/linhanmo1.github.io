@@ -227,3 +227,11 @@ jekyll-archives:
   permalinks:
     tag: /tags/:name/
     category: /categories/:name/
+    giscus:
+  repo: linhanmo1/linhanmo1.github.io
+  repo_id: R_kgDOUqiHAw
+  category: Announcements
+  category_id: DIC_kwDOUqiHA84DGWSH
+  mapping: pathname
+  lang: zh-CN
+
