@@ -112,28 +112,6 @@ actions:
     # Set to true if the URL should remain unchanged, which means each post will share the same edit link.
     static_url: false # [ true | false ]
 
-comments:
-  # Global switch for the post-comment system. Keeping it empty means disabled.
-  provider: # [disqus | utterances | giscus]
-  # The provider options are as follows:
-  disqus:
-    shortname: # fill with the Disqus shortname. › https://help.disqus.com/en/articles/1717111-what-s-a-shortname
-  # utterances settings › https://utteranc.es/
-  utterances:
-    repo: # <gh-username>/<repo>
-    issue_term: # < url | pathname | title | ...>
-  # Giscus options › https://giscus.app
-  giscus:
-    repo: # <gh-username>/<repo>
-    repo_id:
-    category:
-    category_id:
-    mapping: # optional, default to 'pathname'
-    strict: # optional, default to '0'
-    input_position: # optional, default to 'bottom'
-    lang: # optional, default to the value of `site.lang`
-    reactions_enabled: # optional, default to the value of `1`
-
 # Self-hosted static assets, optional › https://github.com/cotes2020/chirpy-static-assets
 assets:
   self_host:
@@ -236,4 +214,22 @@ jekyll-archives:
   category_id: DIC_kwDOUqiHA84DGWSH
   mapping: pathname
   lang: zh-CN
+
+# _config.yml
+
+comments:
+  active: giscus       # 激活 giscus
+  provider: giscus     # 指定提供商
+
+  giscus:
+    repo: linhanmo1/linhanmo1.github.io   # 你的仓库名
+    repo_id: R_kgDOxxxxxx                 # 替换为你获取的 Repository ID
+    category: Announcements               # 替换为你选择的 Category 名称
+    category_id: DIC_xxxxxx               # 替换为你获取的 Category ID
+    mapping: pathname                     # 推荐用 pathname，每篇文章对应一个 Discussion
+    reactions_enabled: 1                  # 启用表情反应
+    emit_metadata: 0
+    input_position: bottom                # 评论框位置
+    theme: preferred_color_scheme         # 自动适配主题颜色
+    lang: zh-CN                           # 设置为中文
 
